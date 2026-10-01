@@ -1,29 +1,30 @@
 {
-  "name": "course-work-web-api",
+  "name": "solar-generation-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "REST API for real-time and historical solar generation data",
+  "main": "api/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js",
+    "seed": "node scripts/seed.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "dotenv": "^18.0.5",
-    "express": "^5.2.1",
-    "express-validator": "^7.3.2",
-    "helmet": "^8.3.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.10.3",
-    "morgan": "^1.12.1",
-    "swagger-jsdoc": "^6.3.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1",
+    "morgan": "^1.10.0",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.10"
   }
 }
