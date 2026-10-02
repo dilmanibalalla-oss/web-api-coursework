@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const setupSwagger = require("./swagger-ui"); // Import swagger-ui wrapper
+const setupSwagger = require("./swagger-ui"); 
 
 const authRoutes = require("./routes/auth.routes");
 const districtRoutes = require("./routes/district.routes");
@@ -18,6 +18,7 @@ const {
 const app = express();
 
 // Disable CSP so Swagger UI CDN assets load properly
+// app.js
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
