@@ -5,7 +5,6 @@ const app = require("../app");
 const connectDatabase = require("../config/database");
 
 async function handler(req, res) {
-  // Make sure MongoDB configuration exists
   if (!process.env.MONGODB_URI) {
     console.error("MONGODB_URI is not configured");
 
