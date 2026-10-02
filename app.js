@@ -18,12 +18,34 @@ const {
 
 const app = express();
 
-app.use(helmet());
+// Disable CSP so Swagger UI inline scripts & CDN assets aren't blocked by Helmet
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Raw Swagger JSON spec endpoint
+app.get("/api-docs/swagger.json", (_req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerDocument);
+});
+
+// Cloudflare CDN assets for Swagger UI (solves Vercel serverless missing node_modules static files)
+const SWAGGER_CSS_URL =
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css";
+const SWAGGER_JS_URLS = [
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js"
+];
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    customCssUrl: SWAGGER_CSS_URL,
+    customJs: SWAGGER_JS_URLS
+  })
+);
 
 app.get("/", (_req, res) => {
   res.json({ message: "Solar Generation API" });
