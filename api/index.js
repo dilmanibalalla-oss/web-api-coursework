@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const mongoose = require("mongoose");
@@ -7,8 +8,15 @@ const connectDatabase = require("../config/database");
 let databasePromise;
 
 function connectOnce() {
-  if (!databasePromise || mongoose.connection.readyState !== 1) {
-    databasePromise = connectDatabase();
+  if (mongoose.connection.readyState === 1) {
+    return Promise.resolve();
+  }
+
+  if (!databasePromise) {
+    databasePromise = connectDatabase().catch((err) => {
+      databasePromise = null;
+      throw err;
+    });
   }
 
   return databasePromise;
@@ -19,9 +27,18 @@ async function handler(req, res) {
     try {
       await connectOnce();
     } catch (err) {
-      console.error("Database connection error in handler:", err.message);
+      console.error(
+        "Database connection error in handler:",
+        err.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message: "Database connection failed"
+      });
     }
   }
+
   return app(req, res);
 }
 
@@ -31,7 +48,9 @@ if (require.main === module) {
   connectOnce()
     .then(() => {
       app.listen(port, () => {
-        console.log(`Solar Generation API listening on port ${port}`);
+        console.log(
+          `Solar Generation API listening on port ${port}`
+        );
       });
     })
     .catch((error) => {
