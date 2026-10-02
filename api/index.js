@@ -1,51 +1,45 @@
-
 require("dotenv").config();
 
 const mongoose = require("mongoose");
 const app = require("../app");
 const connectDatabase = require("../config/database");
 
-let databasePromise;
+async function handler(req, res) {
+  // Make sure MongoDB configuration exists
+  if (!process.env.MONGODB_URI) {
+    console.error("MONGODB_URI is not configured");
 
-function connectOnce() {
-  if (mongoose.connection.readyState === 1) {
-    return Promise.resolve();
-  }
-
-  if (!databasePromise) {
-    databasePromise = connectDatabase().catch((err) => {
-      databasePromise = null;
-      throw err;
+    return res.status(500).json({
+      success: false,
+      message: "Database configuration is missing"
     });
   }
 
-  return databasePromise;
-}
+  try {
+    // Connect to MongoDB
+    await connectDatabase();
+  } catch (err) {
+    console.error(
+      "Database connection error:",
+      err.message
+    );
 
-async function handler(req, res) {
-  if (process.env.MONGODB_URI) {
-    try {
-      await connectOnce();
-    } catch (err) {
-      console.error(
-        "Database connection error in handler:",
-        err.message
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: "Database connection failed"
-      });
-    }
+    return res.status(500).json({
+      success: false,
+      message: "Database connection failed"
+    });
   }
 
+  // Pass request to Express
   return app(req, res);
 }
 
+
+// Local development
 if (require.main === module) {
   const port = Number(process.env.PORT) || 3000;
 
-  connectOnce()
+  connectDatabase()
     .then(() => {
       app.listen(port, () => {
         console.log(
@@ -54,7 +48,11 @@ if (require.main === module) {
       });
     })
     .catch((error) => {
-      console.error("Failed to start API:", error.message);
+      console.error(
+        "Failed to start API:",
+        error.message
+      );
+
       process.exitCode = 1;
     });
 }
