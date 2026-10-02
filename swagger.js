@@ -1,7 +1,12 @@
+
 const path = require("path");
 const swaggerJSDoc = require("swagger-jsdoc");
 
-const routesGlob = path.join(__dirname, "routes/*.js").replace(/\\/g, "/");
+const routesGlob = path
+  .join(__dirname, "routes", "*.js")
+  .replace(/\\/g, "/");
+
+const isProduction = process.env.VERCEL === "1";
 
 const options = {
   definition: {
@@ -16,16 +21,16 @@ const options = {
 
     servers: [
       {
-        url: "/",
-        description: "Current environment"
-      },
-      {
-        url: "http://localhost:3000",
-        description: "Local development (Port 3000)"
+        url: isProduction
+          ? "https://web-api-coursework.vercel.app"
+          : "http://localhost:3000",
+        description: isProduction
+          ? "Production server (Vercel)"
+          : "Local development server"
       },
       {
         url: "http://localhost:5000",
-        description: "Local development (Port 5000)"
+        description: "Alternative local development server"
       }
     ],
 
@@ -40,7 +45,7 @@ const options = {
     }
   },
 
-  apis: [routesGlob],
+  apis: [routesGlob]
 };
 
 module.exports = swaggerJSDoc(options);
