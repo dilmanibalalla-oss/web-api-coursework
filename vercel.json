@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "includeFiles": "routes/**"
+      "includeFiles": "node_modules/swagger-ui-dist/**"
     }
   },
   "rewrites": [
