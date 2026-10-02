@@ -1,4 +1,7 @@
+const path = require("path");
 const swaggerJSDoc = require("swagger-jsdoc");
+
+const routesGlob = path.join(__dirname, "routes/*.js").replace(/\\/g, "/");
 
 const options = {
   definition: {
@@ -13,8 +16,16 @@ const options = {
 
     servers: [
       {
+        url: "/",
+        description: "Current environment"
+      },
+      {
+        url: "http://localhost:3000",
+        description: "Local development (Port 3000)"
+      },
+      {
         url: "http://localhost:5000",
-        description: "Local development"
+        description: "Local development (Port 5000)"
       }
     ],
 
@@ -29,7 +40,7 @@ const options = {
     }
   },
 
-  apis: []
+  apis: [routesGlob],
 };
 
 module.exports = swaggerJSDoc(options);

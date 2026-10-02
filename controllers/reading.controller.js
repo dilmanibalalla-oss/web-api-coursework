@@ -13,7 +13,7 @@ const District =
   require("../models/District");
 
 const Province =
-  require("../models/Province");
+  require("../models/Provinces");
 
 async function createReading(req, res) {
   const installationId = req.params.installationId;

@@ -1,7 +1,7 @@
 const SolarInstallation = require("../models/SolarInstallation");
 const GridSubstation = require("../models/GridSubstation");
 const District = require("../models/District");
-const Province = require("../models/Province");
+const Province = require("../models/Provinces");
 
 async function getInstallation(req, res) {
   const installation = await SolarInstallation.findById(

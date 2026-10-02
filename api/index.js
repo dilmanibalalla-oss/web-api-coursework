@@ -1,12 +1,13 @@
 require("dotenv").config();
 
+const mongoose = require("mongoose");
 const app = require("../app");
 const connectDatabase = require("../config/database");
 
 let databasePromise;
 
 function connectOnce() {
-  if (!databasePromise) {
+  if (!databasePromise || mongoose.connection.readyState !== 1) {
     databasePromise = connectDatabase();
   }
 
@@ -14,7 +15,13 @@ function connectOnce() {
 }
 
 async function handler(req, res) {
-  await connectOnce();
+  if (process.env.MONGODB_URI) {
+    try {
+      await connectOnce();
+    } catch (err) {
+      console.error("Database connection error in handler:", err.message);
+    }
+  }
   return app(req, res);
 }
 
